@@ -85,6 +85,11 @@ android {
 
 val prepareAssetsFiles = tasks.register("prepareAssetsFiles") {
 	description = "Prepare assets"
+	// The Irrlicht OGLES2 shaders staged below come from the downloaded
+	// native dependencies. Without this dependency, parallel builds on a
+	// clean machine can pack assets.zip BEFORE those deps are unpacked,
+	// silently producing an APK whose main menu cannot render (blue screen).
+	dependsOn(":native:getDeps")
 	val assetsFolder = "build/assets/Files"
 	val projRoot = "../../"
 
@@ -119,6 +124,17 @@ val prepareAssetsFiles = tasks.register("prepareAssetsFiles") {
 		copy {
 			from("../custom_mods")
 			into("$assetsFolder/mods")
+		}
+		// Fail loudly rather than ship an APK with no OGLES2 shaders:
+		// without them the Irrlicht 2D renderer cannot draw anything and
+		// the app shows only a blue screen on device.
+		for (shader in listOf("COGLES2Solid.vsh", "COGLES2Solid.fsh",
+				"COGLES2Renderer2D.vsh", "COGLES2Renderer2D.fsh")) {
+			val shaderFile = file("$assetsFolder/client/shaders/Irrlicht/$shader")
+			if (!shaderFile.exists()) {
+				throw GradleException("Missing Irrlicht shader in staged assets: " +
+					"$shaderFile - :native deps must be unpacked before packing assets")
+			}
 		}
 	}
 }
