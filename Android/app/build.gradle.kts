@@ -16,7 +16,7 @@ android {
 	val versionPatch = rootProject.extra["versionPatch"] as Int
 
 	defaultConfig {
-		applicationId = "com.multicraft.game"
+		applicationId = "com.mycraft.game"
 		minSdk = 23
 		targetSdk = 37
 		versionName = "$versionMajor.$versionMinor.$versionPatch"
@@ -63,6 +63,7 @@ android {
 			isEnable = true
 			reset()
 			include("armeabi-v7a", "arm64-v8a", "x86_64")
+			isUniversalApk = true // MyCraft: also build one APK that installs on almost every device
 		}
 	}
 
@@ -111,6 +112,13 @@ val prepareAssetsFiles = tasks.register("prepareAssetsFiles") {
 			from("$projRoot/textures")
 			into("$assetsFolder/textures")
 			exclude("*.txt")
+		}
+		// MyCraft: bundle built-in mods (areas, mycraft_homes).
+		// They end up in <internal storage>/mods after assets extraction and can be
+		// enabled per-world from the "Select Mods" screen.
+		copy {
+			from("../custom_mods")
+			into("$assetsFolder/mods")
 		}
 	}
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="app_name" translatable="false">MultiCraft</string>
+	<string name="app_name" translatable="false">MyCraft</string>
 	<!-- preparation for start -->
 	<string name="preparing">Preparing to launch&#8230;</string>
 
@@ -9,7 +9,7 @@
 
 	<!-- no connection dialog -->
 	<string name="conn_title">No Internet Connection!</string>
-	<string name="conn_message">MultiCraft requires an Internet connection to use all game features.\nOtherwise, you will not get Updates and Multiplayer mode will be not available!</string>
+	<string name="conn_message">MyCraft requires an Internet connection to use all game features.\nOtherwise, you will not get Updates and Multiplayer mode will be not available!</string>
 	<string name="conn_wifi" translatable="false">Wi-Fi</string>
 	<string name="conn_mobile" translatable="false">LTE</string>
 	<string name="ignore">Ignore</string>

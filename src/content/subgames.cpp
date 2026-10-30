@@ -110,7 +110,10 @@ SubgameSpec findSubgame(const std::string &id)
 	// Find mod directories
 	std::unordered_map<std::string, std::string> mods_paths;
 	mods_paths["mods"] = user + DIR_DELIM + "mods";
-	if (!user_game && user != share)
+	// MyCraft: always search share/mods so APK-bundled mods are also available
+	// for games the player installs into the user directory (e.g. from ContentDB).
+	(void)user_game;
+	if (user != share)
 		mods_paths["share"] = share + DIR_DELIM + "mods";
 	char *mod_path = getenv("MINETEST_MODS_PATH");
 	if (mod_path && *mod_path)

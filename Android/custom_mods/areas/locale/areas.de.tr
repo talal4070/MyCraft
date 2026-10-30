@@ -1,0 +1,123 @@
+# textdomain: areas
+Can administer areas=Kann Bereiche verwalten
+Can protect more, bigger areas=Kann mehr und größere Bereiche schützen
+Can protect areas=Kann Bereiche schützen
+You have reached the limit of areas.=Sie haben die maximale Anzahl an Bereichen erreicht.
+
+### chatcommands.lua ###
+
+<AreaName>=<Bereichsname>
+<NewOwner>=<Neuer Besitzer>
+<ParentID>=<Eltern-Id>
+<PlayerName>=<Spielername>
+<NewName>=<Neuer Name>
+@1 has given you control over the area "@2" (ID @3).=@1 hat Ihnen die Kontrolle über den Bereich „@2“ (ID @3) gegeben.
+@1 spanning up to @2x@3x@4.=@1 reicht bis zu @2x@3x@4.
+A regular expression is required.=Ein regulärer Ausdruck ist erforderlich.
+Area @1 does not exist or is not owned by you.=Bereich @1 existiert nicht oder gehört Ihnen nicht.
+Area closed for faction members.=Bereich für Fraktionsmitglieder geschlossen.
+Area closed.=Bereich geschlossen.
+Area does not exist.=Bereich existiert nicht.
+Area opened for faction members.=Bereich für Fraktionsmitglieder geöffnet.
+Area opened.=Bereich geöffnet.
+Area protected. ID: @1=Bereich geschützt. ID: @1
+Area renamed.=Bereich umbenannt.
+Area successfully moved.=Bereich erfolgreich verschoben.
+Change the owner of an area using its ID=Ändern Sie den Eigentümer eines Bereichs anhand seiner ID
+Find areas using a Lua regular expression=Finden Sie Bereiche mithilfe eines regulären Lua-Ausdrucks
+Get information about area configuration and usage.=Erhalten Sie Informationen zur Bereichskonfiguration und -nutzung.
+
+Give a player access to a sub-area between two positions that have already been protected, Use set_owner if you don't want the parent to be set.=Gewähren Sie einem Spieler Zugriff auf einen Unterbereich zwischen zwei bereits geschützten Positionen. Verwenden Sie set_owner, wenn Sie nicht möchten, dass das übergeordnete Element festgelegt wird.
+
+(by @1)=(von @1)
+
+Invalid regular expression.=Ungültiger regulärer Ausdruck.
+Invalid usage, see /help @1.=Ungültige Verwendung, siehe /help @1.
+Limit: @1 areas=Limit: @1 Bereiche
+Limit: no area count limit=Limit: keine Begrenzung der Flächenanzahl
+List your areas=Listen Sie Ihre Bereiche auf
+Move (or resize) an area to the current positions.=Verschieben (oder Ändern der Größe) eines Bereichs an die aktuellen Positionen.
+No matches found.=Keine Treffer gefunden.
+No visible areas.=Keine sichtbaren Bereiche.
+Too many areas to list all.=Zu viele Bereiche, um alle aufzulisten.
+Owner changed.=Besitzer gewechselt.
+Players with the "@1" privilege can protect up to @2 areas=Spieler mit der Berechtigung „@1“ können bis zu @2 Bereiche schützen
+
+Protect an area between two positions and give a player access to it without setting the parent of the area to any existing area=Schützen Sie einen Bereich zwischen zwei Positionen und gewähren Sie einem Spieler Zugriff darauf, ohne den übergeordneten Bereich des Bereichs auf einen vorhandenen Bereich festzulegen
+
+Protect your own area=Schützen Sie Ihren eigenen Bereich
+Recursively remove areas using an ID=Bereiche mithilfe einer ID rekursiv entfernen
+Remove an area using an ID=Entfernen Sie einen Bereich mithilfe einer ID
+Removed area @1=Bereich @1 entfernt
+Removed area @1 and it's sub areas.=Bereich @1 und seine Unterbereiche entfernt.
+Removes all ownerless areas=Entfernt alle herrenlosen Bereiche
+Total areas: @1, Removed: @2 areas. New count: @3.=Bereiche insgesamt: @1, Entfernt: @2 Bereiche. Neue Anzahl: @3.
+Rename an area that you own=Benennen Sie einen Bereich um, der Ihnen gehört
+Self protection is disabled.=Das Schützen von Bereichen durch Spieler ist deaktiviert.
+Self protection is enabled.=Das Schützen von Bereichen durch Spieler ist aktiviert.
+That area doesn't exist.=Dieser Bereich existiert nicht.
+The player "@1" does not exist.=Der Spieler „@1“ existiert nicht.
+Toggle an area open (anyone can interact) or closed=Schalten Sie einen Bereich zwischen offen (jeder kann interagieren) und geschlossen um
+Toggle an area open/closed for members in your faction.=Schalten Sie einen Bereich für Mitglieder Ihrer Fraktion offen/geschlossen um.
+You are an area administrator ("areas" privilege).=Sie sind Bereichsadministrator (Berechtigung „areas“).
+You can protect areas=Sie können Bereiche schützen
+You can't protect that area.=Sie können diesen Bereich nicht schützen.
+You can't protect that area: @1=Sie können diesen Bereich nicht schützen: @1
+You don't have the necessary privilege ("@1").=Sie verfügen nicht über die erforderliche Berechtigung („@1“).
+You don't own that area.=Dieser Bereich gehört Ihnen nicht.
+You have @1 areas.=Sie haben @1 Bereiche.
+
+You have been granted control over area #@1. Type /list_areas to show your areas.=Ihnen wurde die Kontrolle über Bereich #@1 gewährt. Geben Sie /list_areas ein, um Ihre Bereiche anzuzeigen.
+
+You have extended area protection limits ("areas_high_limit" privilege).=Sie verfügen über erweiterte Bereichsschutzgrenzen (Berechtigung „areas_high_limit“).
+
+You have the necessary privilege ("@1").=Sie verfügen über das erforderliche Privileg („@1“).
+You need to select an area first.=Sie müssen zunächst einen Bereich auswählen.
+
+You cannot enable PvP, there are other players in the area: @1.=Sie können PvP nicht aktivieren, es sind andere Spieler in dem Bereich: @1.
+PvP is @1 in area @2.=PvP ist @1 im Bereich @2.
+enabled=aktiviert
+disabled=deaktiviert
+
+### hud.lua ###
+
+Areas:=Bereiche:
+Open=Offen
+PvP enabled=PvP aktiviert
+PvP disabled=PvP deaktiviert
+
+### interact.lua ###
+
+This area @1 is protected by another player.=Dieser Bereich @1 wird von einem anderen Spieler geschützt.
+Wow, wow, take it easy!=Wow, wow, lass es ruhig angehen!
+PvP is not allowed in this area!=PvP ist in diesem Bereich nicht erlaubt!
+
+### internal.lua ###
+
+Area is too big.=Fläche ist zu groß.
+
+Self protection is disabled or you do not have the necessary privilege.=Das Schützen von Bereichen durch Spieler ist deaktiviert oder Sie haben nicht die erforderliche Berechtigung.
+
+The area intersects with @1 [@2] (@3).=Der Bereich überschneidet sich mit @1 [@2] (@3).
+
+You have reached the maximum amount of areas that you are allowed to protect.=Sie haben die maximale Anzahl an Bereichen erreicht, die Sie schützen dürfen.
+Target player has reached the maximum amount of areas they are allowed to protect.=Der Zielspieler hat die maximale Anzahl an Gebieten erreicht, die er schützen darf.
+
+### pos.lua ###
+
+<not set>=<nicht gesetzt>
+Area @1 selected.=Bereich @1 ausgewählt.
+Area position @1 set to @2=Bereichsposition @1 auf @2 gesetzt
+Position @1 set to @2=Position @1 auf @2 gesetzt
+Position @1:=Position @1:
+Select an area by ID.=Wählen Sie einen Bereich anhand der ID aus.
+Select position @1 by punching a node.=Wählen Sie Position @1 aus, indem Sie auf einen Block schlagen.
+Select positions by punching two nodes.=Wählen Sie die Positionen aus, indem Sie auf zwei Blöcke schlagen.
+
+Set area protection region position @1 to your location or the one specified=Stellen Sie die Position der Bereichsschutzregion @1 auf Ihren oder den angegebenen Standort ein
+
+Set area protection region, position 1, or position 2 by punching nodes, or display the region=Legen Sie die Schutzregion, Position 1 oder Position 2 fest, indem Sie auf Blöcke schlagen, oder zeigen Sie die Region an
+
+The area @1 does not exist.=Der Bereich @1 existiert nicht.
+Unable to get position.=Position kann nicht ermittelt werden.
+Unknown subcommand: @1=Unbekannter Unterbefehl: @1

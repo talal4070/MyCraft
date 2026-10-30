@@ -1,0 +1,420 @@
+local S = areas.S
+
+function areas:player_exists(name)
+	if type(name) ~= "string" then
+		return false
+	end
+	return minetest.get_auth_handler().get_auth(name) ~= nil
+end
+
+-- Save the areas table to a file
+function areas:save_now()
+	-- HACK: Add the version code at the end so that areas can be downgraded
+	-- without issue, minetest.parse_json ignores extra data at the end of the
+	-- string.
+	local datastr = minetest.write_json(self.areas, true) .. "\nv2"
+	if not datastr then
+		minetest.log("error", "[areas] Failed to serialize area data!")
+		return
+	end
+	return minetest.safe_file_write(self.config.filename, datastr)
+end
+
+-- Save areas once per 10s
+local delayed_save = false
+function areas:save()
+	if not delayed_save then
+		delayed_save = true
+		minetest.after(10, function()
+			self:save_now()
+			delayed_save = false
+		end)
+	end
+end
+
+-- Save areas on shutdown if a delayed save is scheduled
+minetest.register_on_shutdown(function()
+	if delayed_save then
+		areas:save_now()
+	end
+end)
+
+local function migrate_by_strings(self)
+	local migrated = 0
+	for _, area in pairs(self.areas) do
+		-- Search without a pattern (the "true" argument) as it is much faster
+		local position = area.name:find("\27(T@areas)", 1, true)
+		if position then
+			-- Parse the "(by <name>)" suffix and store in the "prev_owner" field
+			if not area.prev_owner then
+				area.prev_owner = area.name:match("\27%(T@areas%)%(by \27F([A-Za-z0-9_%-]-)\27E%)\27E$")
+			end
+
+			-- Remove the translation escape sequence from the area name
+			area.name = area.name:sub(1, position - 1):gsub(" $", "")
+
+			migrated = migrated + 1
+		end
+
+		-- Remove broken by strings
+		position = area.name:find(" (by ", 1, true)
+		if position then
+			area.name = area.name:sub(1, position - 1)
+		end
+	end
+
+	if migrated > 0 then
+		minetest.log("action", "[areas] Migrated " .. migrated ..
+			" \"(by <player>)\" strings in area names")
+
+		self:save()
+	end
+end
+
+-- Load the areas table from the save file
+function areas:load()
+	local file, err = io.open(self.config.filename, "r")
+	if err then
+		self.areas = self.areas or {}
+		return err
+	end
+	local data = file:read("*a")
+	local need_migration = true
+	if data:sub(1, 1) == "[" then
+		if data:sub(-3) == "\nv2" then
+			data = data:sub(1, -4)
+			need_migration = false
+		end
+		self.areas, err = minetest.parse_json(data)
+	else
+		self.areas, err = minetest.deserialize(data)
+	end
+	if type(self.areas) ~= "table" then
+		self.areas = {}
+	end
+	if err and #data > 10 then
+		minetest.log("error", "[areas] Failed to load area data: " ..
+			tostring(err))
+	end
+	file:close()
+	if need_migration then
+		migrate_by_strings(self)
+	end
+	self:populateStore()
+end
+
+--- Checks an AreaStore ID.
+-- Deletes the AreaStore (falling back to the iterative method)
+-- and prints an error message if the ID is invalid.
+-- @return Whether the ID was valid.
+function areas:checkAreaStoreId(sid)
+	if not sid then
+		minetest.log("error", "AreaStore failed to find an ID for an "
+			.. "area! Falling back to iterative area checking.")
+		self.store = nil
+		self.store_ids = nil
+	end
+	return sid and true or false
+end
+
+-- Populates the AreaStore after loading, if needed.
+function areas:populateStore()
+	if not rawget(_G, "AreaStore") then
+		return
+	end
+	local store = AreaStore()
+	local store_ids = {}
+	-- Pass the id, without it the store scans itself for a free one
+	for id, area in pairs(areas.areas) do
+		local sid = store:insert_area(area.pos1,
+			area.pos2, tostring(id), id)
+		if not self:checkAreaStoreId(sid) then
+			return
+		end
+		store_ids[id] = sid
+	end
+	self.store = store
+	self.store_ids = store_ids
+end
+
+-- Finds the first usable index in a table
+-- Eg: {[1]=false,[4]=true} -> 2
+local function findFirstUnusedIndex(t)
+	local i = 0
+	repeat i = i + 1
+	until t[i] == nil
+	return i
+end
+
+--- Add a area.
+-- @return The new area's ID.
+function areas:add(owner, name, pos1, pos2, parent)
+	local id = findFirstUnusedIndex(self.areas)
+	self.areas[id] = {
+		name = name,
+		pos1 = pos1,
+		pos2 = pos2,
+		owner = owner,
+		parent = parent,
+		canPvP = nil
+	}
+
+	for i=1, #areas.registered_on_adds do
+		areas.registered_on_adds[i](id, self.areas[id])
+	end
+
+	-- Add to AreaStore
+	if self.store then
+		local sid = self.store:insert_area(pos1, pos2, tostring(id), id)
+		if self:checkAreaStoreId(sid) then
+			self.store_ids[id] = sid
+		end
+	end
+	return id
+end
+
+--- Remove a area, and optionally it's children recursively.
+-- If a area is deleted non-recursively the children will
+-- have the removed area's parent as their new parent.
+function areas:remove(id, recurse)
+	if recurse then
+		-- Recursively find child entries and remove them
+		local cids = self:getChildren(id)
+		for _, cid in pairs(cids) do
+			self:remove(cid, true)
+		end
+	else
+		-- Update parents
+		local parent = self.areas[id].parent
+		local children = self:getChildren(id)
+		for _, cid in pairs(children) do
+			-- The subarea parent will be niled out if the
+			-- removed area does not have a parent
+			self.areas[cid].parent = parent
+		end
+	end
+
+	for i=1, #areas.registered_on_removes do
+		areas.registered_on_removes[i](id)
+	end
+
+	-- Remove main entry
+	self.areas[id] = nil
+
+	-- Remove from AreaStore
+	if self.store then
+		self.store:remove_area(self.store_ids[id])
+		self.store_ids[id] = nil
+	end
+end
+
+--- Move an area.
+function areas:move(id, area, pos1, pos2)
+	area.pos1 = pos1
+	area.pos2 = pos2
+
+	for i=1, #areas.registered_on_moves do
+		areas.registered_on_moves[i](id, area, pos1, pos2)
+	end
+
+	if self.store then
+		self.store:remove_area(areas.store_ids[id])
+		local sid = self.store:insert_area(pos1, pos2, tostring(id), id)
+		if self:checkAreaStoreId(sid) then
+			self.store_ids[id] = sid
+		end
+	end
+end
+
+-- Check if PvP is enabled in an area
+-- @returns true or false (enabled or disabled)
+function areas:canPvP(id)
+	local area = self.areas[id]
+	if not area then
+		return areas.config.pvp_by_default
+	elseif area.canPvP == nil then
+		return false
+	end
+	return area.canPvP
+end
+
+-- Checks if a area between two points is entirely contained by another area.
+-- Positions must be sorted.
+function areas:isSubarea(pos1, pos2, id)
+	local area = self.areas[id]
+	if not area then
+		return false
+	end
+	local ap1, ap2 = area.pos1, area.pos2
+	local ap1x, ap1y, ap1z = ap1.x, ap1.y, ap1.z
+	local ap2x, ap2y, ap2z = ap2.x, ap2.y, ap2.z
+	local p1x, p1y, p1z = pos1.x, pos1.y, pos1.z
+	local p2x, p2y, p2z = pos2.x, pos2.y, pos2.z
+	if
+			(p1x >= ap1x and p1x <= ap2x) and
+			(p2x >= ap1x and p2x <= ap2x) and
+			(p1y >= ap1y and p1y <= ap2y) and
+			(p2y >= ap1y and p2y <= ap2y) and
+			(p1z >= ap1z and p1z <= ap2z) and
+			(p2z >= ap1z and p2z <= ap2z) then
+		return true
+	end
+end
+
+-- Returns a table (list) of children of an area given it's identifier
+function areas:getChildren(id)
+	local children = {}
+	for cid, area in pairs(self.areas) do
+		if area.parent and area.parent == id then
+			table.insert(children, cid)
+		end
+	end
+	return children
+end
+
+function areas:getAreasCount(name)
+	local count = 0
+	for _, area in pairs(self.areas) do
+		if area.owner == name then
+			count = count + 1
+		end
+	end
+	return count
+end
+
+-- Checks if the user has sufficient privileges.
+-- If the player is not a administrator it also checks
+-- if the area intersects other areas that they do not own.
+-- Also checks the size of the area and if the user already
+-- has more than max_areas.
+function areas:canPlayerAddArea(pos1, pos2, name)
+	local privs = minetest.get_player_privs(name)
+	if privs.areas then
+		if areas:getAreasCount(name) >= self.config.self_max_areas_per_player then
+			return false, S("You have reached the limit of areas.")
+		end
+
+		return true
+	end
+
+	-- Check self protection privilege, if it is enabled,
+	-- and if the area is too big.
+	if not self.config.self_protection or
+			not privs[areas.config.self_protection_privilege] then
+		return false, S("Self protection is disabled or you do not have"
+				.." the necessary privilege.")
+	end
+
+	local max_size = privs.areas_high_limit and
+			self.config.self_protection_max_size_high or
+			self.config.self_protection_max_size
+	if
+			(pos2.x - pos1.x) > max_size.x or
+			(pos2.y - pos1.y) > max_size.y or
+			(pos2.z - pos1.z) > max_size.z then
+		return false, S("Area is too big.")
+	end
+
+	-- Check number of areas the user has and make sure it not above the max
+	local max_areas = privs.areas_high_limit and
+			self.config.self_protection_max_areas_high or
+			self.config.self_protection_max_areas
+	if areas:getAreasCount(name) >= max_areas then
+		return false, S("You have reached the maximum amount of"
+				.." areas that you are allowed to protect.")
+	end
+
+	-- Check intersecting areas
+	local can, id = self:canInteractInArea(pos1, pos2, name)
+	if not can then
+		local area = self.areas[id]
+		return false, S("The area intersects with @1 [@2] (@3).",
+				area.name, id, area.owner)
+	end
+
+	return true
+end
+
+function areas:canPlayerAddOwner(pos1, pos2, name)
+	local privs = minetest.get_player_privs(name)
+	if privs.areas then
+		if areas:getAreasCount(name) >= self.config.self_max_areas_per_player then
+			return false, S("You have reached the limit of areas.")
+		end
+
+		return true
+	end
+
+	local max_size = privs.areas_high_limit and
+			self.config.self_protection_max_size_high or
+			self.config.self_protection_max_size
+	if
+			(pos2.x - pos1.x) > max_size.x * 1.5 or
+			(pos2.y - pos1.y) > max_size.y * 1.5 or
+			(pos2.z - pos1.z) > max_size.z * 1.5 then
+		return false, S("Area is too big.")
+	end
+
+	-- Check number of areas the user has and make sure it not above the max
+	local max_areas = privs.areas_high_limit and
+			self.config.self_protection_max_areas_high or
+			self.config.self_protection_max_areas
+	if areas:getAreasCount(name) >= max_areas then
+		return false, S("Target player has reached the maximum amount of"
+				.. " areas they are allowed to protect.")
+	end
+
+	return true
+end
+
+-- Given a id returns a string in the format:
+-- "name [id]: owner (x1, y1, z1) (x2, y2, z2) -> children"
+function areas:toString(id)
+	local area = self.areas[id]
+	local message = ("%s [%d]: %s %s %s"):format(
+		area.name, id, area.owner,
+		minetest.pos_to_string(area.pos1),
+		minetest.pos_to_string(area.pos2))
+
+	local children = areas:getChildren(id)
+	if #children > 0 then
+		message = message.." -> "..table.concat(children, ", ")
+	end
+	return message
+end
+
+-- Re-order areas in table by their identifiers
+function areas:sort()
+	local sa = {}
+	for k, area in pairs(self.areas) do
+		if not area.parent then
+			table.insert(sa, area)
+			local newid = #sa
+			for _, subarea in pairs(self.areas) do
+				if subarea.parent == k then
+					subarea.parent = newid
+					table.insert(sa, subarea)
+				end
+			end
+		end
+	end
+	self.areas = sa
+end
+
+-- Checks if a player owns an area or a parent of it
+function areas:isAreaOwner(id, name)
+	local cur = self.areas[id]
+	if cur and minetest.check_player_privs(name, self.adminPrivs) then
+		return true
+	end
+	while cur do
+		if cur.owner == name then
+			return true
+		elseif cur.parent then
+			cur = self.areas[cur.parent]
+		else
+			return false
+		end
+	end
+	return false
+end

@@ -1,0 +1,123 @@
+# textdomain: areas
+Can administer areas=エリアを管理できる
+Can protect more, bigger areas=より多く、より広いエリアを保護できる
+Can protect areas=エリアを保護できる
+You have reached the limit of areas.=エリアの上限に達しました。
+
+### chatcommands.lua ###
+
+<AreaName>=<エリア名>
+<NewOwner>=<新しい所有者>
+<ParentID>=<親ID>
+<PlayerName>=<プレイヤー名>
+<NewName>=<新しい名前>
+@1 has given you control over the area "@2" (ID @3).=@1があなたにエリア「@2」（ID @3）の管理権を与えました。
+@1 spanning up to @2x@3x@4.=@1（サイズは最大@2x@3x@4）。
+A regular expression is required.=正規表現が必要です。
+Area @1 does not exist or is not owned by you.=エリア@1は存在しないか、あなたの所有ではありません。
+Area closed for faction members.=派閥のメンバーにはエリアが閉鎖されています。
+Area closed.=エリアをクローズしました。
+Area does not exist.=エリアが存在しません。
+Area opened for faction members.=ファクションメンバーのためのエリアがオープン。
+Area opened.=エリアをオープンしました。
+Area protected. ID: @1=エリアを保護しました。ID: @1
+Area renamed.=エリア名を変更しました。
+Area successfully moved.=エリア移動に成功しました。
+Change the owner of an area using its ID=IDでエリアの所有者を変更する
+Find areas using a Lua regular expression=Luaの正規表現でエリアを検索する
+Get information about area configuration and usage.=エリアの構成と使用状況に関する情報を取得します。
+
+Give a player access to a sub-area between two positions that have already been protected, Use set_owner if you don't want the parent to be set.=すでに保護されている2つの位置の間のサブ領域にアクセスできるようにします。親を設定したくない場合は set_owner を使用します。
+
+(by @1)=(@1による)
+
+Invalid regular expression.=正規表現が無効です。
+Invalid usage, see /help @1.=使用方法が正しくありません。/help @1 を参照してください。
+Limit: @1 areas=上限：@1エリア
+Limit: no area count limit=制限：エリアカウントの制限なし
+List your areas=自分のエリア一覧
+Move (or resize) an area to the current positions.=領域を現在の位置に移動（またはサイズ変更）する。
+No matches found.=該当するものがありません。
+No visible areas.=表示できるエリアはありません。
+Too many areas to list all.=エリアが多すぎて、すべて表示できません。
+Owner changed.=所有者が変更になりました。
+Players with the "@1" privilege can protect up to @2 areas=「@1」権限を持つプレイヤーは最大@2個のエリアを保護できます
+
+Protect an area between two positions and give a player access to it without setting the parent of the area to any existing area=2つのポジションの間にあるエリアを保護し、そのエリアの親を既存のエリアに設定することなく、プレイヤーにアクセスさせることができます。
+
+Protect your own area=自分のエリアを保護する
+Recursively remove areas using an ID=IDでエリアとそのサブエリアを削除する
+Remove an area using an ID=IDでエリアを削除する
+Removed area @1=エリア@1を削除しました
+Removed area @1 and it's sub areas.=エリア@1およびそのサブエリアを削除しました。
+Removes all ownerless areas=オーナー不在のエリアをすべて削除
+Total areas: @1, Removed: @2 areas. New count: @3.=合計エリア数：@1、削除：@2 エリア。新しい数：@3。
+Rename an area that you own=所有するエリアの名前を変更する
+Self protection is disabled.=プレイヤーによるエリア保護は無効です。
+Self protection is enabled.=プレイヤーによるエリア保護は有効です。
+That area doesn't exist.=そのエリアは存在しません。
+The player "@1" does not exist.=プレイヤー「@1」は存在しません。
+Toggle an area open (anyone can interact) or closed=エリアをオープン（誰でも参加可能）またはクローズにトグルする
+Toggle an area open/closed for members in your faction.=所属する派閥のメンバーに対して、エリアのオープン/クローズを切り替えます。
+You are an area administrator ("areas" privilege).=あなたはエリア管理者です（「areas」権限）。
+You can protect areas=エリアを保護することができます
+You can't protect that area.=そのエリアは保護できません。
+You can't protect that area: @1=そのエリアは保護できません：@1
+You don't have the necessary privilege ("@1").=必要な権限（「@1」）がありません。
+You don't own that area.=そのエリアはあなたの所有ではありません。
+You have @1 areas.=所有エリア数：@1
+
+You have been granted control over area #@1. Type /list_areas to show your areas.=エリア#@1の制御が許可されました。 /list_areasと入力すると、自分のエリアが表示されます。
+
+You have extended area protection limits ("areas_high_limit" privilege).=エリア保護の上限が拡張されています（「areas_high_limit」権限）。
+
+You have the necessary privilege ("@1").=必要な権限（「@1」）があります。
+You need to select an area first.=まずエリアを選択する必要があります。
+
+You cannot enable PvP, there are other players in the area: @1.=エリア内に他のプレイヤーがいるため、PvPを有効にできません：@1。
+PvP is @1 in area @2.=エリア@2のPvPは@1です。
+enabled=有効
+disabled=無効
+
+### hud.lua ###
+
+Areas:=エリア
+Open=オープン
+PvP enabled=PvP有効
+PvP disabled=PvP無効
+
+### interact.lua ###
+
+This area @1 is protected by another player.=このエリア@1は他のプレイヤーによって保護されています。
+Wow, wow, take it easy!=わわっ、落ち着いて！
+PvP is not allowed in this area!=このエリアではPvPは禁止されています！
+
+### internal.lua ###
+
+Area is too big.=エリアが大きすぎます。
+
+Self protection is disabled or you do not have the necessary privilege.=プレイヤーによるエリア保護が無効か、必要な権限がありません。
+
+The area intersects with @1 [@2] (@3).=エリアが@1 [@2] (@3)と重なっています。
+
+You have reached the maximum amount of areas that you are allowed to protect.=保護できるエリアが上限に達しています。
+Target player has reached the maximum amount of areas they are allowed to protect.=対象のプレイヤーは保護できるエリアの上限に達しています。
+
+### pos.lua ###
+
+<not set>=<未設定>
+Area @1 selected.=エリア@1が選択されました。
+Area position @1 set to @2=エリアの位置@1を@2に設定しました
+Position @1 set to @2=位置@1を@2に設定しました
+Position @1:=位置@1：
+Select an area by ID.=IDでエリアを選択します。
+Select position @1 by punching a node.=ブロックを叩いて位置@1を選択してください。
+Select positions by punching two nodes.=2つのブロックを叩いて位置を選択してください。
+
+Set area protection region position @1 to your location or the one specified=保護範囲の位置@1を現在地または指定した位置に設定する
+
+Set area protection region, position 1, or position 2 by punching nodes, or display the region=ブロックを叩いて保護範囲、位置1、位置2を設定するか、範囲を表示する
+
+The area @1 does not exist.=エリア@1は存在しません。
+Unable to get position.=位置を取得できません。
+Unknown subcommand: @1=不明なサブコマンド：@1

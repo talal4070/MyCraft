@@ -1,7 +1,21 @@
-name: android
+name: MyCraft Android
 
-# build on c/cpp changes or workflow changes
+# Build on C/C++ or Android changes, or run manually from the Actions tab.
+# Manual runs can also build a debug build, which is signed with the debug
+# key and installs immediately (slower, for testing). Release builds are
+# unsigned until you sign them with your own keystore - see MYCRAFT_BUILD.md.
 on:
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'What to build'
+        required: true
+        default: 'release'
+        type: choice
+        options:
+          - release
+          - debug
+          - both
   push:
     paths:
       - 'lib/**.[ch]'
@@ -33,15 +47,21 @@ jobs:
       uses: gradle/actions/setup-gradle@v6
     - name: Install GNU gettext
       run: sudo apt-get update && sudo apt-get install -y gettext
-    - name: Build with Gradle
-      run: cd Android; ./gradlew assemblerelease
-    - name: Save armeabi artifact
+    - name: Build with Gradle (all ABIs + universal APK)
+      run: |
+        cd Android
+        case "${{ inputs.build_type }}" in
+          debug) ./gradlew assembleDebug ;;
+          both)  ./gradlew assemblerelease assembleDebug ;;
+          *)     ./gradlew assemblerelease ;;
+        esac
+    - name: List built APKs
+      run: find Android/app/build/outputs/apk -name '*.apk' -exec ls -lh {} \;
+    - name: Save all APKs
       uses: actions/upload-artifact@v7
       with:
-        name: MultiCraft-armeabi-v7a.apk
-        path: Android/app/build/outputs/apk/release/app-armeabi-v7a-release-unsigned.apk
-    - name: Save arm64 artifact
-      uses: actions/upload-artifact@v7
-      with:
-        name: MultiCraft-arm64-v8a.apk
-        path: Android/app/build/outputs/apk/release/app-arm64-v8a-release-unsigned.apk
+        name: MyCraft-APKs
+        path: |
+          Android/app/build/outputs/apk/release/*.apk
+          Android/app/build/outputs/apk/debug/*.apk
+        if-no-files-found: error

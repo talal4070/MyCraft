@@ -1,0 +1,123 @@
+# textdomain: areas
+Can administer areas=Alanları yönetebilir
+Can protect more, bigger areas=Daha fazla, daha büyük alanları koruyabilir
+Can protect areas=Alanları koruyabilir
+You have reached the limit of areas.=Alan sınırına ulaştınız.
+
+### chatcommands.lua ###
+
+<AreaName>=<AlanAdı>
+<NewOwner>=<Yeni Sahip>
+<ParentID>=<Ebeveyn Kimliği>
+<PlayerName>=<OyuncuAdı>
+<NewName>=<Yeni İsim>
+@1 has given you control over the area "@2" (ID @3).=@1 size "@2" (ID @3) alanı üzerinde kontrol sağladı.
+@1 spanning up to @2x@3x@4.=@1, @2x@3x@4'e kadar uzanır.
+A regular expression is required.=Düzenli bir ifade gerekli.
+Area @1 does not exist or is not owned by you.=Alan @1 mevcut değil veya size ait değil.
+Area closed for faction members.=Alan hizip üyeleri için kapatıldı.
+Area closed.=Alan kapalı.
+Area does not exist.=Alan mevcut değil.
+Area opened for faction members.=Grup üyeleri için alan açıldı.
+Area opened.=Alan açıldı.
+Area protected. ID: @1=Alan koruma altına alındı. ID: @1
+Area renamed.=Alan yeniden adlandırıldı.
+Area successfully moved.=Alan başarıyla taşındı.
+Change the owner of an area using its ID=Kimliğini kullanarak bir alanın sahibini değiştirme
+Find areas using a Lua regular expression=Lua düzenli ifadesi kullanarak alanları bulun
+Get information about area configuration and usage.=Alan yapılandırması ve kullanımı hakkında bilgi alın.
+
+Give a player access to a sub-area between two positions that have already been protected, Use set_owner if you don't want the parent to be set.=Bir oyuncuya zaten korunan iki konum arasındaki bir alt alana erişim verin, ebeveynin ayarlanmasını istemiyorsanız set_owner kullanın.
+
+(by @1)=(@1 tarafından)
+
+Invalid regular expression.=Geçersiz düzenli ifade.
+Invalid usage, see /help @1.=Geçersiz kullanım, bkz. /help @1.
+Limit: @1 areas=Sınır: @1 alan
+Limit: no area count limit=Sınır: alan sayısı sınırı yok
+List your areas=Alanlarınızı listeleyin
+Move (or resize) an area to the current positions.=Bir alanı mevcut konumlarına taşıyın (veya yeniden boyutlandırın).
+No matches found.=Hiçbir sonuç bulunamadı.
+No visible areas.=Görünür alan yok.
+Too many areas to list all.=Hepsini listelemek için çok fazla alan var.
+Owner changed.=Sahibi değişti.
+Players with the "@1" privilege can protect up to @2 areas="@1" ayrıcalığına sahip oyuncular en fazla @2 alan koruyabilir
+
+Protect an area between two positions and give a player access to it without setting the parent of the area to any existing area=İki konum arasındaki bir alanı koruyun ve bir oyuncunun, alanın ebeveynini herhangi bir mevcut alana ayarlamadan bu alana erişmesini sağlayın
+
+Protect your own area=Kendi alanınızı koruyun
+Recursively remove areas using an ID=Kimlik kullanarak alanları yinelemeli olarak kaldırın
+Remove an area using an ID=Kimlik kullanarak bir alanı kaldırın
+Removed area @1=@1 alanı kaldırıldı.
+Removed area @1 and it's sub areas.=@1 alanı ve alt alanları kaldırıldı.
+Removes all ownerless areas=Tüm sahipsiz alanları kaldırır
+Total areas: @1, Removed: @2 areas. New count: @3.=Toplam alan: @1, Kaldırıldı: @2 alan. Yeni sayı: @3.
+Rename an area that you own=Sahibi olduğunuz bir alanı yeniden adlandırın
+Self protection is disabled.=Oyuncuların alan koruması devre dışı.
+Self protection is enabled.=Oyuncuların alan koruması etkin.
+That area doesn't exist.=O alan yok.
+The player "@1" does not exist.="@1" oyuncusu mevcut değil.
+Toggle an area open (anyone can interact) or closed=Bir alanı açın (herkes etkileşimde bulunabilir) veya kapatın
+Toggle an area open/closed for members in your faction.=Grubunuzdaki üyeler için bir alanı açık/kapalı hale getirin.
+You are an area administrator ("areas" privilege).=Bir alan yöneticisisiniz ("areas" ayrıcalığı).
+You can protect areas=Alanları koruyabilirsiniz
+You can't protect that area.=O bölgeyi koruyamazsınız.
+You can't protect that area: @1=Bu alanı koruyamazsınız: @1
+You don't have the necessary privilege ("@1").=Gerekli ayrıcalığa ("@1") sahip değilsiniz.
+You don't own that area.=Bu alanın sahibi değilsiniz.
+You have @1 areas.=@1 alanınız var.
+
+You have been granted control over area #@1. Type /list_areas to show your areas.=#@1 alanı üzerinde kontrol sahibi oldunuz. Alanlarınızı göstermek için /list_areas yazın.
+
+You have extended area protection limits ("areas_high_limit" privilege).=Genişletilmiş alan koruma sınırlarına sahipsiniz ("areas_high_limit" ayrıcalığı).
+
+You have the necessary privilege ("@1").=Gerekli ayrıcalığa sahipsiniz ("@1").
+You need to select an area first.=Önce bir alan seçmeniz gerekiyor.
+
+You cannot enable PvP, there are other players in the area: @1.=PvP'yi etkinleştiremezsiniz, bölgede başka oyuncular var: @1.
+PvP is @1 in area @2.=@2 alanında PvP @1.
+enabled=etkin
+disabled=devre dışı
+
+### hud.lua ###
+
+Areas:=Alanlar:
+Open=Açık
+PvP enabled=PvP etkin
+PvP disabled=PvP devre dışı
+
+### interact.lua ###
+
+This area @1 is protected by another player.=Bu alan @1 başka bir oyuncu tarafından korunmaktadır.
+Wow, wow, take it easy!=Vay, vay, sakin ol!
+PvP is not allowed in this area!=Bu alanda PvP'ye izin verilmez!
+
+### internal.lua ###
+
+Area is too big.=Alan çok büyük.
+
+Self protection is disabled or you do not have the necessary privilege.=Oyuncuların alan koruması devre dışı veya gerekli ayrıcalığa sahip değilsiniz.
+
+The area intersects with @1 [@2] (@3).=Alan @1 [@2] (@3) ile kesişiyor.
+
+You have reached the maximum amount of areas that you are allowed to protect.=Korumanıza izin verilen maksimum alan sayısına ulaştınız.
+Target player has reached the maximum amount of areas they are allowed to protect.=Hedef oyuncu, korumalarına izin verilen maksimum alan miktarına ulaştı.
+
+### pos.lua ###
+
+<not set>=<ayarlanmadı>
+Area @1 selected.=Alan @1 seçildi.
+Area position @1 set to @2=Alan konumu @1, @2 olarak ayarlandı
+Position @1 set to @2=Konum @1, @2 olarak ayarlandı
+Position @1:=Konum @1:
+Select an area by ID.=Kimliğe göre bir alan seçin.
+Select position @1 by punching a node.=Bir bloğa vurarak @1 konumunu seçin.
+Select positions by punching two nodes.=İki bloğa vurarak konumları seçin.
+
+Set area protection region position @1 to your location or the one specified=Alan koruma bölgesi konumunu @1 konumunuza veya belirtilen konuma ayarlayın
+
+Set area protection region, position 1, or position 2 by punching nodes, or display the region=Bloklara vurarak alan koruma bölgesini, konum 1'i veya konum 2'yi ayarlayın ya da bölgeyi görüntüleyin
+
+The area @1 does not exist.=@1 alanı mevcut değil.
+Unable to get position.=Pozisyon alınamıyor.
+Unknown subcommand: @1=Bilinmeyen alt komut: @1
