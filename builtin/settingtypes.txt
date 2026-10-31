@@ -993,6 +993,9 @@ serverlist_url (Serverlist URL) string servers.minetest.net
 #    Multiplayer Tab.
 serverlist_file (Serverlist file) string favoriteservers.json
 
+#    Colour family of the MyCraft main menu: teal, violet, coral or moss.
+mycraft_theme (Menu colour theme) enum teal teal,violet,coral,moss
+
 #    Maximum size of the out chat queue.
 #    0 to disable queueing and -1 to make the queue size unlimited.
 max_out_chat_queue_size (Maximum size of the out chat queue) int 20
@@ -2233,7 +2236,7 @@ num_emerge_threads (Number of emerge threads) int 1
 [Online Content Repository]
 
 #    The URL for the content repository
-contentdb_url (ContentDB URL) string https://content.minetest.net
+contentdb_url (ContentDB URL) string https://content.luanti.org
 
 #    Comma-separated list of flags to hide in the content repository.
 #    "nonfree" can be used to hide packages which do not qualify as 'free software',

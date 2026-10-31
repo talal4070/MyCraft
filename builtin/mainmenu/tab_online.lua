@@ -21,6 +21,8 @@ local function get_sorted_servers()
 		public = {},
 		incompatible = {}
 	}
+	-- MyCraft: public servers are returned as region groups (Asia first)
+	servers.public_groups = nil
 
 	local favs = serverlistmgr.get_favorites()
 	local taken_favs = {}
@@ -50,6 +52,15 @@ local function get_sorted_servers()
 				table.insert(servers.fav, fav)
 			end
 		end
+	end
+
+	-- MyCraft: split the public list into labelled region groups.
+	-- Favourites stay exactly as the engine shows them; a search result
+	-- keeps its relevance order and is not re-grouped.
+	if serverlistmgr.mycraft_group and not menudata.search_result then
+		servers.public_groups = serverlistmgr.mycraft_group(servers.public, true)
+	else
+		servers.public_groups = { { key = "ALL", label = nil, servers = servers.public } }
 	end
 
 	return servers
@@ -155,12 +166,28 @@ local function get_formspec(tabview, name, tabdata)
 	tabdata.lookup = {} -- maps row number to server
 	local rows = {}
 	for _, section in ipairs(order) do
-		local section_servers = servers[section]
-		if next(section_servers) ~= nil then
-			rows[#rows + 1] = dividers[section]
-			for _, server in ipairs(section_servers) do
-				tabdata.lookup[#rows + 1] = server
-				rows[#rows + 1] = render_serverlist_row(server)
+		if section == "public" then
+			-- MyCraft: one divider per region group, labelled by proximity
+			local groups = servers.public_groups or
+				{ { key = "ALL", label = nil, servers = servers.public } }
+			for _, group in ipairs(groups) do
+				if #group.servers > 0 then
+					local label = group.label or fgettext("Public Servers")
+					rows[#rows + 1] = "6,#4bdd42," .. core.formspec_escape(label) .. ",,,0,0,,"
+					for _, server in ipairs(group.servers) do
+						tabdata.lookup[#rows + 1] = server
+						rows[#rows + 1] = render_serverlist_row(server)
+					end
+				end
+			end
+		else
+			local section_servers = servers[section]
+			if next(section_servers) ~= nil then
+				rows[#rows + 1] = dividers[section]
+				for _, server in ipairs(section_servers) do
+					tabdata.lookup[#rows + 1] = server
+					rows[#rows + 1] = render_serverlist_row(server)
+				end
 			end
 		end
 	end
@@ -391,7 +418,7 @@ end
 
 return {
 	name = "online",
-	caption = fgettext("Join Game"),
+	caption = fgettext("Servers"),
 	cbf_formspec = get_formspec,
 	cbf_button_handler = main_button_handler,
 	on_change = on_change

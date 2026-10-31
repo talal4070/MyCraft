@@ -817,7 +817,8 @@ end
 
 --------------------------------------------------------------------------------
 function pkgmgr.get_game(index)
-	if index > 0 and index <= #pkgmgr.games then
+	-- index is nil when no game is installed yet (first run)
+	if index ~= nil and index > 0 and index <= #pkgmgr.games then
 		return pkgmgr.games[index]
 	end
 

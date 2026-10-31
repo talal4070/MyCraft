@@ -312,6 +312,8 @@ void set_default_settings()
 	// Main menu
 	settings->setDefault("main_menu_path", "");
 	settings->setDefault("serverlist_file", "favoriteservers.json");
+	// MyCraft menu colour family: teal, violet, coral or moss
+	settings->setDefault("mycraft_theme", "teal");
 
 	// General font settings
 	settings->setDefault("font_path", porting::getDataPath("fonts" DIR_DELIM "MultiCraftFont.ttf"));
@@ -361,7 +363,9 @@ void set_default_settings()
 	settings->setDefault("chat_font_size", "0"); // Default "font_size"
 
 	// ContentDB
-	settings->setDefault("contentdb_url", "https://content.multicraft.world");
+	// MyCraft: the MultiCraft mirror no longer serves the ContentDB JSON API,
+	// so use the official store, which has the full catalogue.
+	settings->setDefault("contentdb_url", "https://content.luanti.org");
 	settings->setDefault("contentdb_max_concurrent_downloads", "3");
 
 #ifdef __ANDROID__

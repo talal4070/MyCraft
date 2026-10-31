@@ -397,7 +397,7 @@ end
 --------------------------------------------------------------------------------
 return {
 	name = "local",
-	caption = fgettext("Start Game"),
+	caption = fgettext("Play"),
 	cbf_formspec = get_formspec,
 	cbf_button_handler = main_button_handler,
 	on_change = on_change

@@ -36,6 +36,9 @@ dofile(menupath .. DIR_DELIM .. "common.lua")
 dofile(menupath .. DIR_DELIM .. "pkgmgr.lua")
 dofile(menupath .. DIR_DELIM .. "serverlistmgr.lua")
 dofile(menupath .. DIR_DELIM .. "game_theme.lua")
+-- MyCraft: original look + friendlier captions + grouped server list
+dofile(menupath .. DIR_DELIM .. "mycraft_theme.lua")
+dofile(menupath .. DIR_DELIM .. "mycraft_patch.lua")
 
 dofile(menupath .. DIR_DELIM .. "dlg_config_world.lua")
 dofile(menupath .. DIR_DELIM .. "dlg_settings_advanced.lua")
@@ -45,6 +48,9 @@ dofile(menupath .. DIR_DELIM .. "dlg_delete_content.lua")
 dofile(menupath .. DIR_DELIM .. "dlg_delete_world.lua")
 dofile(menupath .. DIR_DELIM .. "dlg_rename_modpack.lua")
 dofile(menupath .. DIR_DELIM .. "dlg_version_info.lua")
+
+-- MyCraft: theme hooks need mm_game_theme and store to exist
+mycraft_patch.install()
 
 local tabs = {}
 
@@ -119,6 +125,13 @@ local function init_globals()
 	end
 
 	ui.set_default("maintab")
+
+	-- MyCraft theme, pass 1: the style layer. The menu GUI is created with
+	-- formspec version 1, so a prepend is the only place styles can be added
+	-- without rewriting every tab and dialog in the engine.
+	if core.set_formspec_prepend then
+		core.set_formspec_prepend(mycraft_theme.style())
+	end
 
 	check_new_version()
 	tv_main:show()
